@@ -17,7 +17,6 @@ import org.altbeacon.beacon.BeaconTransmitter
 
 
 class MainActivity: FlutterActivity() {
-    private var forService: Intent? = null
     private val CHANNEL = "samples.flutter.dev/beaconTest"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,17 +38,25 @@ class MainActivity: FlutterActivity() {
                 }
                 "startService" -> {
 
-                    forService = Intent(this@MainActivity, MyService()::class.java)
+                    var forService = Intent(this@MainActivity, MyService()::class.java)
+                    forService.setAction("start")
 
-                    val serviceResponse = startService()
+                    val serviceResponse = startServiceMain(forService)
 
                     result.success(serviceResponse.toString())
+                }
+                "stopService" -> {
+                        var forService = Intent(this@MainActivity, MyService()::class.java)
+                        forService.setAction("stop")
+
+                        val serviceResponse = startServiceMain(forService)
+                        result.success(serviceResponse.toString())
                 }
             }
         }
     }
 
-    private fun startService() {
+    private fun startServiceMain(forService: Intent?) {
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             startForegroundService(forService)

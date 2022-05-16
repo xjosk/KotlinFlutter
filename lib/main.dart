@@ -38,10 +38,17 @@ class _BeaconMainState extends State<BeaconMain> {
     }
   }
 
-  Future<void> _startService(
-      {required String title, required String text}) async {
+  Future<void> _startService() async {
     try {
       final String result = await platform.invokeMethod('startService');
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> _stopService() async {
+    try {
+      final String result = await platform.invokeMethod('stopService');
     } on PlatformException catch (e) {
       print(e);
     }
@@ -53,16 +60,20 @@ class _BeaconMainState extends State<BeaconMain> {
         body: Center(
       child: SizedBox(
           width: MediaQuery.of(context).size.width,
-          child: TextButton(
-              onPressed: () async {
-                _startService(title: "hola", text: "desde flutter");
-
-                while (true) {
-                  await Future.delayed(const Duration(seconds: 5));
-                  print("hi");
-                }
-              },
-              child: const Text('Test'))),
+          child: Column(
+            children: [
+              TextButton(
+                  onPressed: () async {
+                    _startService();
+                  },
+                  child: const Text('Start service')),
+              TextButton(
+                  onPressed: () async {
+                    _stopService();
+                  },
+                  child: const Text("Stop service")),
+            ],
+          )),
     ));
   }
 }

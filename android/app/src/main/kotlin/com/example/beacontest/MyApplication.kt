@@ -11,7 +11,7 @@ class MyApplication: FlutterApplication() {
         super.onCreate()
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val channel = NotificationChannel("message","Messages", NotificationManager.IMPORTANCE_LOW)
+            val channel = NotificationChannel("message","Messages", NotificationManager.IMPORTANCE_NONE)
             val manager = getSystemService(NotificationManager::class.java)
             manager.createNotificationChannel(channel)
         }
