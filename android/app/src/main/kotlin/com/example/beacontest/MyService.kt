@@ -1,5 +1,7 @@
 package com.example.beacontest
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -12,7 +14,8 @@ class MyService() : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, "messages")
+
+            val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, "message")
                 .setContentText("Running in the background")
                 .setContentTitle("Beacontest")
                 .setSmallIcon(R.drawable.ic_android_black_24dp)

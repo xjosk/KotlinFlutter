@@ -1,5 +1,7 @@
 package com.example.beacontest
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -36,6 +38,7 @@ class MainActivity: FlutterActivity() {
                     result.success(beaconResponse.toString())
                 }
                 "startService" -> {
+
                     forService = Intent(this@MainActivity, MyService()::class.java)
 
                     val serviceResponse = startService()
@@ -47,6 +50,7 @@ class MainActivity: FlutterActivity() {
     }
 
     private fun startService() {
+
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             startForegroundService(forService)
         }
