@@ -30,7 +30,7 @@ class BeaconService : Service(){
         beaconManager.backgroundBetweenScanPeriod = 0
         beaconManager.backgroundScanPeriod = 1100
 
-        region = Region("all-beacon", null, null, null)
+        region = Region("all-beacons", null, null, null)
         beaconManager.startMonitoring(region)
         beaconManager.startRangingBeacons(region)
 
