@@ -54,6 +54,14 @@ class _BeaconMainState extends State<BeaconMain> {
     }
   }
 
+  Future<void> _startScanning() async {
+    try {
+      final String result = await platform.invokeMethod('startScanning');
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,6 +80,11 @@ class _BeaconMainState extends State<BeaconMain> {
                     _stopService();
                   },
                   child: const Text("Stop service")),
+              TextButton(
+                  onPressed: () async {
+                    _startScanning();
+                  },
+                  child: const Text("Start Scanning")),
             ],
           )),
     ));
