@@ -1,7 +1,9 @@
 package com.example.beacontest
 
-import android.app.Service
+import android.app.*
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.NonNull
@@ -23,6 +25,11 @@ class BeaconService : Service(){
             BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24")
         )
 
+        setupForegroundService()
+        beaconManager.setEnableScheduledScanJobs(false)
+        beaconManager.backgroundBetweenScanPeriod = 0
+        beaconManager.backgroundScanPeriod = 1100
+
         region = Region("all-beacon", null, null, null)
         beaconManager.startMonitoring(region)
         beaconManager.startRangingBeacons(region)
@@ -37,7 +44,29 @@ class BeaconService : Service(){
 
     }
 
-    val centralMonitoringObserver = Observer<Int> { state ->
+    private fun setupForegroundService() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val builder = Notification.Builder(this, "BeaconReferenceApp")
+            builder.setSmallIcon(R.drawable.ic_android_black_24dp)
+            builder.setContentTitle("Scanning for Beacons")
+            val intent = Intent(this, MainActivity::class.java)
+            val pendingIntent = PendingIntent.getActivity(
+                this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT + PendingIntent.FLAG_IMMUTABLE
+            )
+            builder.setContentIntent(pendingIntent);
+            val channel =  NotificationChannel("beacon-ref-notification-id",
+                "My Notification Name", NotificationManager.IMPORTANCE_DEFAULT)
+            channel.description = "My Notification Channel Description"
+            val notificationManager =  getSystemService(
+                Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel);
+            builder.setChannelId(channel.getId());
+            BeaconManager.getInstanceForApplication(this).enableForegroundServiceScanning(builder.build(), 456)
+        }
+
+    }
+
+    private val centralMonitoringObserver = Observer<Int> { state ->
         if (state == MonitorNotifier.OUTSIDE) {
             Log.d(TAG, "outside beacon region: "+region)
         }
@@ -46,7 +75,7 @@ class BeaconService : Service(){
         }
     }
 
-    val centralRangingObserver = Observer<Collection<Beacon>> { beacons ->
+    private val centralRangingObserver = Observer<Collection<Beacon>> { beacons ->
         Log.d(TAG, "Ranged: ${beacons.count()} beacons")
         for (beacon: Beacon in beacons) {
             Log.d(TAG, "$beacon about ${beacon.distance} meters away")
@@ -54,7 +83,7 @@ class BeaconService : Service(){
     }
 
     companion object {
-        val TAG = "BeaconReference"
+        const val TAG = "BeaconReference"
     }
 
     override fun onBind(@NonNull p0: Intent?): IBinder? {

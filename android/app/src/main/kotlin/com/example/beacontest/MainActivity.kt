@@ -54,7 +54,7 @@ class MainActivity: FlutterActivity() {
                 }
                 "startScanning" -> {
                     var forService = Intent(this@MainActivity, BeaconService()::class.java)
-                    val serviceResponse = startServiceMain(forService)
+                    val serviceResponse = startService(forService)
                     result.success(serviceResponse.toString())
                 }
             }
