@@ -2,17 +2,13 @@ package com.example.beacontest
 
 import android.Manifest
 import android.app.AlertDialog
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
@@ -22,6 +18,7 @@ import org.altbeacon.beacon.Beacon
 import org.altbeacon.beacon.BeaconParser
 import org.altbeacon.beacon.BeaconTransmitter
 
+private const val TAG = "MyBroadcastReceiver"
 
 class MainActivity: FlutterActivity() {
     private val CHANNEL = "samples.flutter.dev/beaconTest"
@@ -33,8 +30,14 @@ class MainActivity: FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         GeneratedPluginRegistrant.registerWith(FlutterEngine(this))
+        Log.d(TAG,"andreiOnCreate")
 
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG,"andreiOnstart")
     }
 
     /*private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -224,6 +227,12 @@ class MainActivity: FlutterActivity() {
 
     }
 
+    fun startFromBootReceiver(){
+        BeaconStreamHandler(this)
+    }
+
+    private var eventSink: EventChannel.EventSink? = null
+
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
@@ -252,33 +261,29 @@ class MainActivity: FlutterActivity() {
                     result.success(serviceResponse.toString())
                 }
                 "startScanning" -> {
-                    var forService = Intent(this@MainActivity, BeaconService()::class.java)
+                    var forService = Intent(this@MainActivity, ServiceTest()::class.java)
                     val serviceResponse = startService(forService)
                     result.success(serviceResponse.toString())
                 }
 
                 "stopScanning" -> {
                     Log.d("STOP SCANNING", "xd")
-                    var forService = Intent(this@MainActivity, BeaconService()::class.java)
-                    forService.setAction("stop")
+                    var forService = Intent(this@MainActivity, ServiceTest()::class.java)
                     val serviceResponse = stopService(forService)
                     result.success(serviceResponse.toString())
+                }
+
+                "sharedPreferences" -> {
+                    val sharedPreferences: SharedPreferences = this.getSharedPreferences("FlutterSharedPreferences",Context.MODE_PRIVATE)
+                    /*val editor:SharedPreferences.Editor =  sharedPreferences.edit()
+                    editor.putString("flutter.test","hi")
+                    editor.apply()*/
+                    Log.d("SHARED PREFERENCE", sharedPreferences.getBoolean("flutter.isPressed", false).toString())
                 }
             }
         }
 
-        EventChannel(flutterEngine.dartExecutor.binaryMessenger, EVENT_CHANNEL).setStreamHandler(
-            object : EventChannel.StreamHandler {
-                override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onCancel(arguments: Any?) {
-                    TODO("Not yet implemented")
-                }
-
-            }
-        )
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, EVENT_CHANNEL).setStreamHandler(BeaconStreamHandler(this))
     }
 
     private fun startServiceMain(forService: Intent?) {
