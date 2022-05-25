@@ -142,8 +142,9 @@ class _BeaconMainState extends State<BeaconMain> {
                       : () async {
                           await listenToBeacons(beaconEventsController);
                           await setBool("isPressed", true);
+                          bool isPressed = await getBool("isPressed");
                           setState(() {
-                            _isPressed = true;
+                            _isPressed = isPressed;
                           });
                         },
                   child: const Text("START SCANNING AND GET INFO")),
@@ -153,8 +154,9 @@ class _BeaconMainState extends State<BeaconMain> {
                       : () async {
                           await _stopScanning();
                           await setBool("isPressed", false);
+                          bool isPressed = await getBool("isPressed");
                           setState(() {
-                            _isPressed = false;
+                            _isPressed = isPressed;
                           });
                         },
                   child: const Text("Stop scanning"))

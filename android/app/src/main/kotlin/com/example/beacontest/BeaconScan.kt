@@ -12,28 +12,32 @@ import org.altbeacon.beacon.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 class BeaconScan (private val context: Context?, private val eventSink: EventChannel.EventSink?){
+    companion object {
+        var TAG = "BeaconScanObject"
+    }
     var region: Region = Region("all-beacons", null, null, null)
     private lateinit var beaconManager: BeaconManager
     val centralMonitoringObserver = Observer<Int> { state ->
         if (state == MonitorNotifier.OUTSIDE) {
-            Log.d(BeaconStreamHandler.TAG, "outside beacon region: "+region)
+            Log.d(TAG, "outside beacon region: "+region)
         }
         else {
-            Log.d(BeaconStreamHandler.TAG, "inside beacon region: "+region)
+            Log.d(TAG, "inside beacon region: "+region)
         }
     }
 
     val centralRangingObserver = Observer<Collection<Beacon>> { beacons ->
 
-        Log.d(BeaconStreamHandler.TAG, "Ranged: ${beacons.count()} beacons")
+        Log.d(TAG, "Ranged: ${beacons.count()} beacons")
+        Log.d(TAG, "IM EXECUTING TWICE XD")
         for (beacon: Beacon in beacons) {
-            Log.d(BeaconStreamHandler.TAG, "Distancia del iBeacon: *********** ${beacon.distance} ****************")
-            Log.d(BeaconStreamHandler.TAG, "UUID: *********** ${beacon.id1} ****************")
-            Log.d(BeaconStreamHandler.TAG, "Major: *********** ${beacon.id2} ****************")
-            Log.d(BeaconStreamHandler.TAG, "Minor: *********** ${beacon.id3} ****************")
-            Log.d(BeaconStreamHandler.TAG, "Fuerza de señal: *********** ${beacon.rssi} ****************")
-            Log.d(BeaconStreamHandler.TAG, "Potencia de transmision: *********** ${beacon.txPower} ****************")
-            Log.d(BeaconStreamHandler.TAG, "Buelotooth Address: *********** ${beacon.bluetoothAddress} ****************")
+            Log.d(TAG, "Distancia del iBeacon: *********** ${beacon.distance} ****************")
+            Log.d(TAG, "UUID: *********** ${beacon.id1} ****************")
+            Log.d(TAG, "Major: *********** ${beacon.id2} ****************")
+            Log.d(TAG, "Minor: *********** ${beacon.id3} ****************")
+            Log.d(TAG, "Fuerza de señal: *********** ${beacon.rssi} ****************")
+            Log.d(TAG, "Potencia de transmision: *********** ${beacon.txPower} ****************")
+            Log.d(TAG, "Buelotooth Address: *********** ${beacon.bluetoothAddress} ****************")
 
             eventSink?.success(beacon.toString())
         }
@@ -69,13 +73,12 @@ class BeaconScan (private val context: Context?, private val eventSink: EventCha
         val regionViewModel =
             BeaconManager.getInstanceForApplication(context).getRegionViewModel(region)
 
-        regionViewModel.regionState.observeForever(centralMonitoringObserver)
-
-        regionViewModel.rangedBeacons.observeForever(centralRangingObserver)
+        if(!regionViewModel.regionState.hasActiveObservers() && !regionViewModel.rangedBeacons.hasActiveObservers()) {
+            regionViewModel.regionState.observeForever(centralMonitoringObserver)
+            regionViewModel.rangedBeacons.observeForever(centralRangingObserver)
+        }
 
         ContextCompat.startForegroundService(context, Intent(context, ServiceTest::class.java))
-
-
     }
 
 
