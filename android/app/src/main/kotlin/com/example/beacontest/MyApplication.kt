@@ -3,7 +3,6 @@ package com.example.beacontest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
-import android.util.Log
 import io.flutter.app.FlutterApplication
 
 class MyApplication: FlutterApplication() {

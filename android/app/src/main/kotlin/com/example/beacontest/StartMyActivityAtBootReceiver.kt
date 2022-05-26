@@ -6,11 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
-import org.altbeacon.beacon.*
 
 private const val TAG = "MyBroadcastReceiver"
 
@@ -22,7 +18,7 @@ class StartMyActivityAtBootReceiver: BroadcastReceiver() {
         val isPressed = sharedPreferences.getBoolean("flutter.isPressed", false)
 
         if(isPressed) {
-            BeaconScan(context = context, eventSink = null)
+            BeaconScan(context = context)
         }
         Log.d(TAG,"hello")
     }
