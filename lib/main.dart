@@ -23,7 +23,6 @@ class MyApp extends StatelessWidget {
                 style: TextButton.styleFrom(
                     textStyle: TextStyle(fontSize: 20),
                     padding: EdgeInsets.symmetric(vertical: 14),
-                    // fixedSize: Size(300, 100),
                     primary: Colors.white,
                     backgroundColor: primaryColor,
                     shape: RoundedRectangleBorder(
@@ -32,7 +31,6 @@ class MyApp extends StatelessWidget {
                 style: TextButton.styleFrom(
                     textStyle: TextStyle(fontSize: 20),
                     padding: EdgeInsets.symmetric(vertical: 14),
-                    // fixedSize: Size(300, 100),
                     primary: Colors.black,
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
