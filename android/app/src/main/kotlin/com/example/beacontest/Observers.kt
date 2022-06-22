@@ -1,6 +1,13 @@
 package com.example.beacontest
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
 import io.flutter.plugin.common.EventChannel
 import org.altbeacon.beacon.Beacon
@@ -11,8 +18,8 @@ class Observers {
     companion object{
         var eventSink: EventChannel.EventSink? = null
         var region: Region = Region("all-beacons", null, null, null)
-        var TAG = "Observer"
-        fun centralRangingObserver(): Observer<Collection<Beacon>> {
+        private var TAG = "Observer"
+        fun centralRangingObserver(context: Context): Observer<Collection<Beacon>> {
             return Observer<Collection<Beacon>> {
                 Log.d(TAG, "Ranged: ${it.count()} beacons")
                 Log.d(TAG, "IM EXECUTING TWICE XD")
@@ -25,6 +32,19 @@ class Observers {
                     Log.d(TAG, "Potencia de transmision: *********** ${beacon.txPower} ****************")
                     Log.d(TAG, "Buelotooth Address: *********** ${beacon.bluetoothAddress} ****************")
 
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        val builder = NotificationCompat.Builder(context, "beacon")
+                            .setSmallIcon(R.drawable.ic_android_black_24dp)
+                            .setContentTitle("Beacon detected")
+                            .setContentText(beacon.distance.toString())
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+                        with(NotificationManagerCompat.from(context)) {
+                            notify(123, builder.build())
+                        }
+                    }
+
                     eventSink?.success(beacon.toString())
                 }
             }
@@ -33,10 +53,10 @@ class Observers {
             return Observer<Int> {
                     state ->
                 if (state == MonitorNotifier.OUTSIDE) {
-                    Log.d(TAG, "outside beacon region: "+region)
+                    Log.d(TAG, "outside beacon region: $region")
                 }
                 else {
-                    Log.d(TAG, "inside beacon region: "+region)
+                    Log.d(TAG, "inside beacon region: $region")
                 }
             }
         }

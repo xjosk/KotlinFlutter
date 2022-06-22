@@ -32,6 +32,7 @@ class _BeaconMainState extends State<BeaconMain> {
   static const EventChannel event_channel = EventChannel('listen_beacon');
   final StreamController<String> beaconEventsController =
       StreamController<String>.broadcast();
+  late StreamSubscription<dynamic> subscription;
 
   // Future<void> _testBeacon() async {
   //   try {
@@ -83,12 +84,17 @@ class _BeaconMainState extends State<BeaconMain> {
   // }
 
   listenToBeacons(StreamController controller) async {
-    event_channel.receiveBroadcastStream().listen((dynamic event) {
+    subscription =
+        event_channel.receiveBroadcastStream().listen((dynamic event) {
       print('Received FLUTTER: $event');
       controller.add(event);
     }, onError: (dynamic error) {
       print('Received error FLUTTER: ${error.message}');
     });
+  }
+
+  stopListeningToBeacons() async {
+    await subscription.cancel();
   }
 
   setBool(String key, bool value) async {
@@ -152,6 +158,7 @@ class _BeaconMainState extends State<BeaconMain> {
                   onPressed: !_isPressed
                       ? null
                       : () async {
+                          await stopListeningToBeacons();
                           await _stopScanning();
                           await setBool("isPressed", false);
                           bool isPressed = await getBool("isPressed");

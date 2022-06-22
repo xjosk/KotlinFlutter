@@ -12,11 +12,12 @@ import org.altbeacon.beacon.BeaconParser
 import org.altbeacon.beacon.Region
 
 class ServiceTest: Service() {
-    var region: Region = Region("all-beacons", null, null, null)
+    lateinit var region: Region
     lateinit var beaconManager: BeaconManager
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         beaconManager = BeaconManager.getInstanceForApplication(this)
+        region = Observers.region
         setupForegroundService()
         return START_NOT_STICKY
     }
@@ -32,11 +33,10 @@ class ServiceTest: Service() {
             )
             builder.setContentIntent(pendingIntent)
 
-            builder.setChannelId("beacon-ref-notification-id");
             BeaconManager.getInstanceForApplication(this).enableForegroundServiceScanning(builder.build(), 456)
             BeaconManager.getInstanceForApplication(this).setEnableScheduledScanJobs(false)
 
-            startForeground(456,builder.build())
+            startForeground(beaconManager.foregroundServiceNotificationId,beaconManager.foregroundServiceNotification)
         }
 
     }

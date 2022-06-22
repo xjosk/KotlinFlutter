@@ -25,16 +25,6 @@ class MyApplication: FlutterApplication() {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val serviceChannel = NotificationChannel(
-                "beacon-ref-notification-id",
-                CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            val manager = getSystemService(
-                NotificationManager::class.java
-            )
-            manager.createNotificationChannel(serviceChannel)
-
             val serviceChannel2 = NotificationChannel(
                 "BeaconReferenceApp",
                 CHANNEL_NAME,
@@ -44,6 +34,17 @@ class MyApplication: FlutterApplication() {
                 NotificationManager::class.java
             )
             manager2.createNotificationChannel(serviceChannel2)
+
+            val serviceChannel3 = NotificationChannel(
+                "beacon",
+                "a",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            val manager3 = getSystemService(
+                NotificationManager::class.java
+            )
+            manager3.createNotificationChannel(serviceChannel3)
+
         }
     }
 }

@@ -46,7 +46,7 @@ class BeaconScan (private val context: Context?) {
 
         if(!regionViewModel.rangedBeacons.hasObservers() && !regionViewModel.rangedBeacons.hasObservers()) {
             regionViewModel.regionState.observeForever(Observers.centralMonitoringObserver())
-            regionViewModel.rangedBeacons.observeForever(Observers.centralRangingObserver())
+            regionViewModel.rangedBeacons.observeForever(Observers.centralRangingObserver(context))
         }
 
     }
