@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,17 +8,38 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  Color primaryColor = const Color(0XFF1A1956);
+  Color accentColor = const Color(0XFFFF9F68);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Material App',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Material App Bar'),
-        ),
-        body: const BeaconMain(),
-      ),
-    );
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            primaryColor: primaryColor,
+            colorScheme:
+                ColorScheme.fromSwatch().copyWith(secondary: accentColor),
+            textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                    textStyle: TextStyle(fontSize: 20),
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                    // fixedSize: Size(300, 100),
+                    primary: Colors.white,
+                    backgroundColor: primaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25)))),
+            outlinedButtonTheme: OutlinedButtonThemeData(
+                style: TextButton.styleFrom(
+                    textStyle: TextStyle(fontSize: 20),
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                    // fixedSize: Size(300, 100),
+                    primary: Colors.black,
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25)),
+                    side: BorderSide(width: 4, color: primaryColor)))),
+        title: 'SWIT',
+        home: const BeaconMain());
   }
 }
 
@@ -137,38 +160,69 @@ class _BeaconMainState extends State<BeaconMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-      child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: [
-              TextButton(
-                  onPressed: _isPressed
-                      ? null
-                      : () async {
-                          await listenToBeacons(beaconEventsController);
-                          await setBool("isPressed", true);
-                          bool isPressed = await getBool("isPressed");
-                          setState(() {
-                            _isPressed = isPressed;
-                          });
-                        },
-                  child: const Text("START SCANNING AND GET INFO")),
-              TextButton(
-                  onPressed: !_isPressed
-                      ? null
-                      : () async {
-                          await stopListeningToBeacons();
-                          await _stopScanning();
-                          await setBool("isPressed", false);
-                          bool isPressed = await getBool("isPressed");
-                          setState(() {
-                            _isPressed = isPressed;
-                          });
-                        },
-                  child: const Text("Stop scanning"))
-            ],
-          )),
+        body: Container(
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              stops: const [.0, .65],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [
+                Theme.of(context).colorScheme.secondary,
+                Theme.of(context).primaryColor
+              ])),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+              flex: 4,
+              child: Container(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                      width: MediaQuery.of(context).size.width / 2,
+                      height: MediaQuery.of(context).size.width / 2,
+                      child: Image.asset('assets/icons/swit-logo.png')))),
+          Expanded(
+            flex: 4,
+            child: IntrinsicWidth(
+              stepWidth: MediaQuery.of(context).size.width * .75,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextButton(
+                      onPressed: _isPressed
+                          ? null
+                          : () async {
+                              await listenToBeacons(beaconEventsController);
+                              await setBool("isPressed", true);
+                              bool isPressed = await getBool("isPressed");
+                              setState(() {
+                                _isPressed = isPressed;
+                              });
+                            },
+                      child: const Text("Start scan")),
+                  const SizedBox(height: 50),
+                  OutlinedButton(
+                      onPressed: !_isPressed
+                          ? null
+                          : () async {
+                              await stopListeningToBeacons();
+                              await _stopScanning();
+                              await setBool("isPressed", false);
+                              bool isPressed = await getBool("isPressed");
+                              setState(() {
+                                _isPressed = isPressed;
+                              });
+                            },
+                      child: const Text("Stop scan"))
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
     ));
   }
 }

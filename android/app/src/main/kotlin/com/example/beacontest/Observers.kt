@@ -36,8 +36,8 @@ class Observers {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         val builder = NotificationCompat.Builder(context, "beacon")
                             .setSmallIcon(R.drawable.ic_android_black_24dp)
-                            .setContentTitle("Beacon detected")
-                            .setContentText(beacon.distance.toString())
+                            .setContentTitle("SWIT")
+                            .setContentText("Welcome to SWIT Gas Station.\nWe deliver the best service for our clients.")
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
                         with(NotificationManagerCompat.from(context)) {
