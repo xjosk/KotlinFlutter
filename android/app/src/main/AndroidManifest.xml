@@ -11,7 +11,7 @@
     <application
         android:name=".MyApplication"
         android:icon="@mipmap/swit_icon"
-        android:label="beacontest">
+        android:label="SWIT Beacon">
         <service
             android:name=".MyService"
             android:enabled="true"

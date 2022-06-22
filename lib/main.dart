@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25)),
                     side: BorderSide(width: 4, color: primaryColor)))),
-        title: 'SWIT',
+        title: 'SWIT Beacon',
         home: const BeaconMain());
   }
 }
